@@ -9,10 +9,12 @@ This repository is a fork of `cooklang/cookcli`. For this whole project:
 - **Never create a pull request**, on this fork or on `cooklang/cookcli`, even
   when another instruction (such as "Before Creating a PR" below) talks about
   one. Commit on a branch and push it; nothing more.
-- Keep `main` an exact copy of `cooklang/cookcli`'s `main`, updated by
-  fast-forward only. See `docs/synchronisation-fork.md`.
-- French documentation for this fork lives in `docs/` and is indexed in
-  `docs/README-fr.md`.
+- `main` is `cooklang/cookcli`'s `main` plus this section only. Bring the
+  upstream changes in with `git merge upstream/main` (a fast-forward is no
+  longer possible), and commit nothing else on `main` unless asked.
+- French documentation for this fork lives in `docs/` on the branch
+  `claude/vigilant-dirac-j727cu`, indexed in `docs/README-fr.md`; the
+  procedure to update the fork is `docs/synchronisation-fork.md`.
 
 ## Repository Overview
 

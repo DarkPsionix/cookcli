@@ -10,13 +10,15 @@ sans perdre votre propre travail.
 
 ```mermaid
 flowchart LR
-    U["upstream/main<br/>(cooklang/cookcli)"] -- "avance rapide" --> M["origin/main<br/>(votre fork)"]
+    U["upstream/main<br/>(cooklang/cookcli)"] -- "fusion" --> M["origin/main<br/>(votre fork)"]
     U -- "fusion" --> B["origin/votre-branche<br/>(votre travail)"]
 ```
 
-- **`main` reste une copie exacte du projet d'origine.** Vous n'y commitez
-  rien directement : il se met à jour en **avance rapide** (fast-forward),
-  sans commit de fusion ni conflit possible.
+- **`main` est le `main` du projet d'origine plus un seul ajout** : la
+  section « Fork Rules » en haut de `CLAUDE.md` (consignes pour Claude, dont
+  l'interdiction des pull requests). Vous n'y commitez rien d'autre. Il se met
+  à jour par **fusion** de `upstream/main` ; l'avance rapide n'est plus
+  possible à cause de cet ajout.
 - **Votre travail vit sur des branches** (par exemple la branche de
   documentation), dans lesquelles vous **fusionnez** `main` ou `upstream/main`.
 
@@ -50,23 +52,24 @@ Pour voir les fichiers touchés :
 git diff --stat origin/main upstream/main
 ```
 
-Vérifiez que votre `main` n'a pas de commit propre (rien ne doit s'afficher) :
+Vérifiez que votre `main` n'a pas d'autre commit propre que ceux de
+`CLAUDE.md` et les fusions précédentes :
 
 ```bash
-git log --oneline upstream/main..origin/main
+git log --oneline --no-merges upstream/main..origin/main
 ```
 
 ## 2. Mettre à jour `main`
 
 ```bash
 git checkout main
-git merge --ff-only upstream/main
+git merge upstream/main
 git push origin main
 ```
 
-`--ff-only` refuse d'agir si une fusion serait nécessaire : c'est une sécurité.
-Si la commande échoue, votre `main` contient des commits propres (voir
-[Cas particuliers](#cas-particuliers)).
+La fusion se fait normalement sans conflit. Seul `CLAUDE.md` peut en
+produire, si le projet d'origine modifie le haut du fichier : gardez alors
+**les deux** contenus, la section « Fork Rules » en premier (voir § 4).
 
 ## 3. Mettre à jour une branche de travail
 
@@ -141,19 +144,19 @@ concerner : nouvelles options, changements de comportement, sécurité.
 
 ## Cas particuliers
 
-**Votre `main` contient des commits propres** (`git merge --ff-only` échoue) :
-déplacez-les sur une branche, puis réalignez `main`.
+**Un autre commit que la section de `CLAUDE.md` est arrivé sur `main`** :
+déplacez-le sur une branche, puis retirez-le de `main` avec `git revert`, qui
+ajoute un commit d'annulation sans réécrire l'historique.
 
 ```bash
 git checkout main
 git branch sauvegarde-main
-git reset --hard upstream/main
-git push --force-with-lease origin main
+git revert <commit>
+git push origin main
 ```
 
-Vos commits restent dans `sauvegarde-main`, d'où vous pouvez les fusionner
-ailleurs. `reset --hard` et `push --force` réécrivent `main` : vérifiez deux
-fois avant de les lancer.
+Le commit reste dans `sauvegarde-main`, d'où vous pouvez le fusionner
+ailleurs.
 
 **Le push vers GitHub est refusé (403)** : l'outil qui pousse n'a pas le droit
 d'écrire sur le dépôt. Pour Claude, installez l'application Claude GitHub sur
@@ -166,7 +169,9 @@ utilisé.
 ## Alternative : depuis l'interface GitHub
 
 Sur la page du fork, le bouton **Sync fork** met `main` à jour depuis le
-projet d'origine, quand aucune fusion n'est nécessaire. Il faut ensuite faire
+projet d'origine. Comme `main` a son propre commit (`CLAUDE.md`), GitHub
+propose de fusionner ; il refuse s'il y a un conflit, à résoudre alors en
+local. Il faut ensuite faire
 `git fetch origin` en local, puis fusionner `main` dans vos branches comme au
 § 3.
 

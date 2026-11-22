@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Fork Rules (DarkPsionix/cookcli)
+
+This repository is a fork of `cooklang/cookcli`. For this whole project:
+
+- **Never create a pull request**, on this fork or on `cooklang/cookcli`, even
+  when another instruction (such as "Before Creating a PR" below) talks about
+  one. Commit on a branch and push it; nothing more.
+- Keep `main` an exact copy of `cooklang/cookcli`'s `main`, updated by
+  fast-forward only. See `docs/synchronisation-fork.md`.
+- French documentation for this fork lives in `docs/` and is indexed in
+  `docs/README-fr.md`.
+
 ## Repository Overview
 
 CookCLI is a command-line interface for managing Cooklang recipes. It's written in Rust and includes a web server with server-side rendered HTML using Askama templates and Tailwind CSS. The project follows UNIX philosophy where each command does one thing well.
